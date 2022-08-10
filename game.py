@@ -1,4 +1,3 @@
-from difflib import diff_bytes
 import random
 
 EASY_DIFF = 0.15
@@ -11,10 +10,16 @@ LARGE_SIZE = 15
 
 def startGame():
 
-    game = createGame()
+    currentField = createGame() #with mines and numbers
+    showField (createGame())
+
+    # while not isGameOver():
+    #     ask_player_for_move
+    #     updateField
+    #     showField(updateField)
 
 def createGame():
-    '''Creates the size and difficulty of the game by returning an array'''
+    '''Creates the size and difficulty of the game by returning an array with all None values'''
 
     difficulty = 'easy' #input("Choose Game Difficulty:\neasy\nmedium\nhard\n--> ") 
     while True:
@@ -54,17 +59,14 @@ def createGame():
     for row in range(gameSize):
         mineField.append([])
         for value in range(gameSize):
-            mineField[row].append([True, None])
-    ans = add_numbers(add_mines(gameSize, difficulty, mineField))
 
-    for x in ans:
-        for y in range(9):
-            print(x[y][1], end='   ')
-        print('\n')
+            mineField[row].append([True, None])
+    
+    return add_numbers(add_mines(gameSize, difficulty, mineField))
 
 def add_mines(size, diff, field):
-    
-    number_of_mines = int((size**2)*diff)
+
+    number_of_mines = 5
 
     while number_of_mines > 0:
         row = random.randrange(0,(size-1))
@@ -74,6 +76,7 @@ def add_mines(size, diff, field):
             continue
         field[row][column][1] = 0
         number_of_mines -= 1
+    
     return field
 
 def add_numbers(field):
@@ -94,8 +97,19 @@ def add_numbers(field):
                         continue
                     mines_around += 1
             field[row][column][1] = mines_around
+            if mines_around == 0:
+                field[row][column][1] = None
     return field
 
-# startGame()
+def showField (field):
 
-createGame()
+    for row in field:
+        for column in range(len(field)):
+            if row[column][0] == False:
+                print('?', end=' | ')
+            else:
+                print(row[column][1], end=' | ')
+        print('\n')
+
+startGame()
+
