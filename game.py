@@ -18,13 +18,17 @@ def startGame():
     mineField = add_numbers(mineField)
 
     showField (mineField)
+    updateField(mineField, ask_for_move(size))
 
     # while not isGameOver():
-    #     ask_player_for_move
-    #     updateField
+    #     move = ask_for_move(size)
+    #     mineField = updateField(mineField, move)
     #     showField(updateField)
 def gameSettings():
-    '''Creates the size and difficulty of the game by returning an array with all None values'''
+
+
+
+    '''asks user for the game difficulty and size of the field'''
 
     difficulty = 'easy' #input("Choose Game Difficulty:\neasy\nmedium\nhard\n--> ") 
     while True:
@@ -73,7 +77,7 @@ def createGame(gameSize):
     return mineField
 
 def add_mines(diff, size, field):
-
+    '''Adds mines to the minefield'''
     number_of_mines = (diff*(size**2))
 
     while number_of_mines > 0:
@@ -88,7 +92,7 @@ def add_mines(diff, size, field):
     return field
 
 def add_numbers(field):
-
+    '''Adds the numbers to the minefield'''
     for row in range(len(field)):
 
         for column in range(len(field)):
@@ -110,6 +114,7 @@ def add_numbers(field):
     return field
 
 def showField (field):
+    '''prints out the current field'''
     row_count = 0
     print('    ', end='')
     for column in range(len(field)):
@@ -125,20 +130,42 @@ def showField (field):
                 print(row[column][1], end=' | ')
         print('\n')
 
-def make_a_move():
+def ask_for_move(size):
+    '''Asks player for a move and returns the the row(int) and column(int) '''
     reply = 'n'
     while reply != 'y':
         print('MAKE A MOVE')
-        row = input('Select the row: ')
-        if int(row) not in range(1,10):                                #Add try except
+        print("Select the row from 1 to ", size,":", end="")
+        row = input()
+        if int(row) not in range(1,10):
+            print("Invalid input Try again!\n")                                
             continue
-        column = input('Select the column: ')
-        if int(column) not in range(1,10):                                #Add try except
+        print("Select the column from 1 to ", size,":", end="")
+        column = input()
+        if int(column) not in range(1,10):  
+            print("Invalid input Try again!\n")                                
             continue
         print('Is This Your Move?(y/n)  ->', 'Row:', row, 'Column:', column)
         reply = input()
-    return (row, column)
+        if reply != 'y' and reply != 'n':
+            print("Invalid input Try again!\n")                                
+            continue
+    return [int(row), int(column)]
 
+def updateField (mineField, move):
+    '''Updates the field, based on the players move'''
+    print('move =', move[0], move[1])
+    block_chosen = mineField[move[0]-1][move[1]-1][1]
+    hidden = mineField[move[0]][move[1]][0] 
+
+    if block_chosen == '*':
+        print('Game Over!\n ---You Lose!---')
+        exit()
+    if block_chosen == ' ':
+        print('blank')
+    else:
+        print('this a number', block_chosen )
+    
 
 startGame()
-make_a_move()
+#Index out of range when move row or column is 9
